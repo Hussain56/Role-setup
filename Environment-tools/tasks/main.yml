@@ -1,0 +1,8 @@
+---
+# tasks file for Envirment-tools
+- include: nginx.yml
+- include: redis.yml
+- include: supervisor.yml
+- include: nodejs.yml
+- include: mongod.yml
+  #- include: citus.yml
