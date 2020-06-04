@@ -28,6 +28,8 @@
   apt: name=postgresql-12-citus-9.2 state=latest
 
 - name: Initialize the cluster with nodes
+  become: true
+  become_user: postgres
   shell: |
     export PATH=$PATH:/usr/lib/postgresql/12/bin
     cd ~
@@ -35,26 +37,27 @@
     initdb -D citus/coordinator
     initdb -D citus/worker1
     initdb -D citus/worker2
-  become: true
-  become_user: postgres
+  ignore_errors: yes
 
 - name: configure variable
+  become: true
+  become_user: postgres
   shell: |
     pg_ctl -D citus/coordinator -o "-p 9700" -l coordinator_logfile start
     pg_ctl -D citus/worker1 -o "-p 9701" -l worker1_logfile start
     pg_ctl -D citus/worker2 -o "-p 9702" -l worker2_logfile start
-  become: true
-  become_user: postgres
+  ignore_errors: yes
 
 - name: configure the co-ordinator
+  become: yes
+  become_user: postgres
   shell: |
     psql -p 9700 -c "CREATE EXTENSION citus;"
     psql -p 9701 -c "CREATE EXTENSION citus;"
     psql -p 9702 -c "CREATE EXTENSION citus;"
     psql -p 9700 -c "SELECT * from master_add_node('localhost', 9701);"
     psql -p 9700 -c "SELECT * from master_add_node('localhost', 9702);"
-  become: true
-  become_user: postgres
+  ignore_errors: yes
 
 - name: Create a directory for data
   shell: | 
