@@ -26,7 +26,7 @@
 - name: Create a directory for data
   shell: | 
       mkdir /home/data/
-      rsync -av /var/lib/mongo /home/data/
+      rsync -av /var/lib/mongodb /home/data/
       mv /var/lib/mongodb /var/lib/mongodb.bak
       ln -s /home/data/mongodb /var/lib/mongodb
 
